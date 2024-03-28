@@ -24,4 +24,14 @@
     <table>
         <tr>
             <th>Nome de Usuário</th>
-            <
+            <th>Função</th>
+        </tr>
+        {% for usuario in usuarios_com_funcoes %}
+        <tr>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.role.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
