@@ -79,11 +79,3 @@ def index():
     return render_template('index.html', form=form, name=session.get('name'),
                            known=session.get('known', False))
 
-# Importe o modelo Role para que possa ser usado na rota
-from usuarios.html import Role
-
-@app.route('/usuarios')
-def mostrar_usuarios():
-    # Recupere todos os usuários e suas funções do banco de dados
-    usuarios_com_funcoes = User.query.join(Role).all()
-    return render_template('usuarios.html', usuarios_com_funcoes=usuarios_com_funcoes)
