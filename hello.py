@@ -78,3 +78,10 @@ def index():
         return redirect(url_for('index'))
     return render_template('index.html', form=form, name=session.get('name'),
                            known=session.get('known', False))
+
+@app.route('/usuarios')
+def listar_usuarios():
+    usuarios = User.query.all()  # Consulta todos os usuários
+    return render_template('usuarios.html', usuarios=usuarios)
+
+
