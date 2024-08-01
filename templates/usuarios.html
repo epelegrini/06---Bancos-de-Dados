@@ -2,8 +2,10 @@
 <html>
 <head>
     <title>Lista de Usuários</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <h1>Lista de Usuários</h1>
     <table>
         <thead>
             <tr>
@@ -15,7 +17,8 @@
             {% for usuario in usuarios %}
             <tr>
                 <td>{{ usuario.username }}</td>
-                <td>{{ usuario.role.name }}</td>  </tr>
+                <td>{{ usuario.role.name }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
