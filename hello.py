@@ -1,4 +1,3 @@
-
 import os
 from flask import Flask, render_template, session, redirect, url_for
 from flask_bootstrap import Bootstrap
@@ -22,7 +21,6 @@ moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -31,7 +29,6 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role %r>' % self.name
-
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -42,26 +39,21 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
     submit = SubmitField('Submit')
-
 
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, User=User, Role=Role)
 
-
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
-
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -83,4 +75,5 @@ def index():
 @app.route('/usuarios')
 def listar_usuarios():
     usuarios = User.query.all()  # Consulta todos os usuários
+    print(usuarios)  # Adicione esta linha para verificar se os usuários estão sendo recuperados
     return render_template('usuarios.html', usuarios=usuarios)
