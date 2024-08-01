@@ -30,6 +30,7 @@ class Role(db.Model):
     def __repr__(self):
         return '<Role %r>' % self.name
 
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,17 +40,22 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
 
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, User=User, Role=Role)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
 
 @app.errorhandler(500)
 def internal_server_error(e):
@@ -59,9 +65,16 @@ def internal_server_error(e):
 def index():
     form = NameForm()
     if form.validate_on_submit():
+        role_name = request.form.get('role', 'user')  # Obtém o cargo do formulário ou usa 'user' como padrão
+        role = Role.query.filter_by(name=role_name).first()
+        if role is None:
+            role = Role(name=role_name)
+            db.session.add(role)
+            db.session.commit()
+        
         user = User.query.filter_by(username=form.name.data).first()
         if user is None:
-            user = User(username=form.name.data)
+            user = User(username=form.name.data, role=role)
             db.session.add(user)
             db.session.commit()
             session['known'] = False
@@ -69,11 +82,9 @@ def index():
             session['known'] = True
         session['name'] = form.name.data
         return redirect(url_for('index'))
+    
+    # Buscar todos os usuários
+    users = User.query.all()
+    
     return render_template('index.html', form=form, name=session.get('name'),
-                           known=session.get('known', False))
-
-@app.route('/usuarios')
-def listar_usuarios():
-    usuarios = User.query.all()  # Consulta todos os usuários
-    print(usuarios)  # Adicione esta linha para verificar se os usuários estão sendo recuperados
-    return render_template('usuarios.html', usuarios=usuarios)
+                           known=session.get('known', False), users=users)
