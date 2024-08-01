@@ -5,12 +5,35 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
-    {% if not known %}
-    <p>Pleased to meet you!</p>
-    {% else %}
-    <p>Happy to see you again!</p>
-    {% endif %}
+    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+    {% if not known %}
+    <p>Pleased to meet you!</p>
+    {% else %}
+    <p>Happy to see you again!</p>
+    {% endif %}
 </div>
-{{ wtf.quick_form(form) }}
+
+<!-- Formulário de Adição de Usuário -->
+<form method="POST" action="{{ url_for('index') }}">
+    {{ wtf.quick_form(form) }}
+</form>
+
+<!-- Lista de Usuários -->
+<h2>Usuários Cadastrados</h2>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Nome do usuario</th>
+            <th>função</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role.name if user.role else 'User' }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
