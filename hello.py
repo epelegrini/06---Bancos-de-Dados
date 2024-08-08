@@ -96,7 +96,12 @@ def index():
     # Recupera todos os usuários e conta a quantidade
     user_all = User.query.all()
     user_count = User.query.count()  # Conta os usuários diretamente no banco de dados
+    
+    # Recupera todas as funções e seus respectivos usuários
+    roles_all = Role.query.all()
+    role_count = Role.query.count()  # Conta as funções cadastradas
 
     return render_template('index.html', form=form, name=session.get('name'),
                            known=session.get('known', False), user_all=user_all,
-                           user_count=user_count)
+                           user_count=user_count, roles_all=roles_all, 
+                           role_count=role_count)
