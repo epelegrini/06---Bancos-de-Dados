@@ -21,6 +21,7 @@ moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -46,7 +47,6 @@ class NameForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, User=User, Role=Role)
@@ -61,20 +61,17 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html'), 500
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = NameForm()
+    user_all = User.query.all();
+    print(user_all);
     if form.validate_on_submit():
-        role_name = request.form.get('role', 'user')  # Obtém o cargo do formulário ou usa 'user' como padrão
-        role = Role.query.filter_by(name=role_name).first()
-        if role is None:
-            role = Role(name=role_name)
-            db.session.add(role)
-            db.session.commit()
-        
-        user = User.query.filter_by(username=form.name.data).first()
+        user = User.query.filter_by(username=form.name.data).first()                
         if user is None:
-            user = User(username=form.name.data, role=role)
+            user_role = Role.query.filter_by(name='User').first();
+            user = User(username=form.name.data, role=user_role);
             db.session.add(user)
             db.session.commit()
             session['known'] = False
@@ -82,9 +79,6 @@ def index():
             session['known'] = True
         session['name'] = form.name.data
         return redirect(url_for('index'))
-    
-    # Buscar todos os usuários
-    users = User.query.all()
-    
     return render_template('index.html', form=form, name=session.get('name'),
-                           known=session.get('known', False), users=users)
+                           known=session.get('known', False),
+                           user_all=user_all);
