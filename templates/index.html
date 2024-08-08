@@ -5,31 +5,48 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Olá, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+    <h1>Olá, {% if name %}{{ name }}{% else %}Estranho{% endif %}!</h1>
     {% if not known %}
     <p>Prazer em conhecê-lo!</p>
     {% else %}
     <p>Feliz em vê-lo novamente!</p>
     {% endif %}
 </div>
-{{ wtf.quick_form(form) }}
 
-<h2>Relação de usuários cadastrados</h2>
+<form method="POST" action="{{ url_for('index') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control", size=32) }}
+    </div>
+    <div class="form-group">
+        <label for="role">Função:</label>
+        <select name="role" id="role" class="form-control">
+            <option value="user">User</option>
+            <option value="mod">Moderator</option>
+            <option value="admin">Administrator</option>
+        </select>
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+
+<h2>Relação de Usuários Cadastrados</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>Nome do usuário</th>
+            <th>Nome do Usuário</th>
             <th>Função</th>
         </tr>
     </thead>
     <tbody>
-        {% for key in user_all %}
+        {% for user in user_all %}
         <tr>
-            <td>{{ key.username }}</td>
-            <td>{{ key.role.name }}</td>            
+            <td>{{ user.username }}</td>
+            <td>{{ user.role.name if user.role else 'User' }}</td>            
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
 {% endblock %}
