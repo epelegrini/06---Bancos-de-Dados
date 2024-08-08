@@ -77,6 +77,13 @@ def index():
             role_name = form.role.data
             user_role = Role.query.filter_by(name=role_name.capitalize()).first()
             
+            # Se a role não existir no banco de dados, você pode criar uma nova
+            if user_role is None:
+                user_role = Role(name=role_name.capitalize())
+                db.session.add(user_role)
+                db.session.commit()
+            
+            # Criação do novo usuário com a role correta
             user = User(username=form.name.data, role=user_role)
             db.session.add(user)
             db.session.commit()
